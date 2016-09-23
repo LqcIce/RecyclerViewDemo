@@ -13,10 +13,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import com.bumptech.glide.Glide;
+
 /**
  * Created by ice on 2016/5/29.
  */
-public class MyNewAdapter extends RecyclerView.Adapter<MyNewAdapter.MyViewHolder>  {
+public class MyNewAdapter extends RecyclerView.Adapter<MyNewAdapter.MyViewHolder> {
 
     private static final String TAG = "MyNewAdapter";
     private final RecyclerView mRecyclerView;
@@ -28,7 +30,6 @@ public class MyNewAdapter extends RecyclerView.Adapter<MyNewAdapter.MyViewHolder
     private int mStart, mEnd;
     private boolean firstFlag = true;
 
-
     public MyNewAdapter(Context context, final ArrayList<ItemBean> arrayList, RecyclerView recyclerView) {
         this.arrayList = arrayList;
         this.context = context;
@@ -36,10 +37,8 @@ public class MyNewAdapter extends RecyclerView.Adapter<MyNewAdapter.MyViewHolder
 
         mRecyclerView = recyclerView;
 
-
     }
 
-    //int i=0;
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
@@ -47,7 +46,6 @@ public class MyNewAdapter extends RecyclerView.Adapter<MyNewAdapter.MyViewHolder
                 .inflate(R.layout.my_list_item, parent, false);
 
         MyViewHolder vh = new MyViewHolder(v);
-      //  Log.e(TAG, "onCreateViewHolder: "+(i++));
         return vh;
     }
 
@@ -55,23 +53,28 @@ public class MyNewAdapter extends RecyclerView.Adapter<MyNewAdapter.MyViewHolder
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         holder.titleText.setText(arrayList.get(position).title);
-        holder.imageView.setTag(arrayList.get(position).drawable);
+        //        java.lang.IllegalArgumentException: You must not call setTag() on a view Glide is targeting
+        //        holder.imageView.setTag(arrayList.get(position).drawable);
 
-        if (!myImageLoader.getImageByCache(holder.imageView, arrayList.get(position).drawable)) {
-            holder.imageView.setImageResource(R.mipmap.ic_launcher);
-            myImageLoader.getImageByThread(holder.imageView, arrayList.get(position).drawable);
-        }
+//        if (!myImageLoader.getImageByCache(holder.imageView, arrayList.get(position).drawable)) {
+//            holder.imageView.setImageResource(R.mipmap.ic_launcher);
+//            myImageLoader.getImageByThread(holder.imageView, arrayList.get(position).drawable);
+//        }
+
+        Glide
+                .with(context)
+                .load(arrayList.get(position).drawable)
+                .centerCrop()
+                .placeholder(R.mipmap.ic_launcher)
+                .crossFade()
+                .into(holder.imageView);
 
     }
-
-
 
     @Override
     public int getItemCount() {
         return arrayList.size();
     }
-
-
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
